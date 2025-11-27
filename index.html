@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CRT Simulation — Simple 2D</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>CRT Simulation (2D side view)</h1>
+
+    <div class="controls">
+      <div class="control-row">
+        <label>Accelerating Voltage: <span id="accel-readout">2000 V</span></label>
+        <input id="accel-slider" type="range" min="1000" max="3000" value="2000" />
+      </div>
+
+      <div class="control-row">
+        <label>Deflection Voltage: <span id="deflect-readout">0 V</span></label>
+        <input id="deflect-slider" type="range" min="-100" max="100" value="0" />
+      </div>
+
+      <div class="control-row">
+        <label><input id="magnetic-toggle" type="checkbox" /> Magnetic Deflection</label>
+        <label><input id="mode-3d" type="checkbox" /> 3D Mode</label>
+        <label><input id="locomotion-toggle" type="checkbox" /> Enable Locomotion</label>
+        <button id="fire-btn">Fire Electron</button>
+        <button id="reset-btn">Reset</button>
+        <label><input id="auto-fire" type="checkbox" /> Auto-fire (continuous)</label>
+      </div>
+      <div class="control-row">
+        <label>Plate spacing (mm): <span id="plate-spacing-read">10</span></label>
+        <input id="plate-spacing-slider" type="range" min="2" max="30" value="10" />
+      </div>
+      <div class="control-row">
+        <label>Plate length (cm): <span id="plate-length-read">6</span></label>
+        <input id="plate-length-slider" type="range" min="2" max="20" value="6" />
+      </div>
+      <div class="control-row">
+        <label>Plate X (cm from gun): <span id="plate-pos-read">18</span></label>
+        <input id="plate-pos-slider" type="range" min="5" max="40" value="18" />
+      </div>
+      <div class="control-row">
+        <label><input id="vector-toggle" type="checkbox" /> Show velocity vectors (v_x/v_y)</label>
+        <label><input id="accumulate-hits" type="checkbox" /> Accumulate hits</label>
+        <button id="clear-hits">Clear hits</button>
+      </div>
+      <div class="control-row">
+        <label>Multi-electron count: <span id="multi-count-read">1</span></label>
+        <input id="multi-count" type="range" min="1" max="12" value="1" />
+      </div>
+
+      <div class="control-row">
+        <label>Beam width: <span id="beam-width-read">6</span> px</label>
+        <input id="beam-width-slider" type="range" min="1" max="16" step="1" value="6" />
+      </div>
+
+      <div class="info-row">
+        <div>Electron hit Y (meters): <span id="hit-y">—</span></div>
+        <div>Screen Y pixels: <span id="hit-px">—</span></div>
+        <div>Forward speed: <span id="v0">—</span> m/s</div>
+        <div>Plate a_y: <span id="ay">—</span> m/s²</div>
+      </div>
+
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="crt-canvas" width="900" height="400" title="CRT simulation canvas"></canvas>
+      <!-- three.js renderer mount point -->
+      <div id="threejs-container" class="threejs-canvas"></div>
+      <div id="hud" class="hud-overlay"></div>
+    </div>
+
+    <div class="legend">
+      <p>Instructions: Use sliders to change accelerating and deflection voltages. Click "Fire Electron" to see path and screen impact. Toggle magnetic to see smoothly curved path (Lorentz deflection).</p>
+    </div>
+    <div class="explain">
+      <h3>How it works</h3>
+      <p>We compute the electron's forward velocity using 0.5 m v^2 = e V_acc (so v = sqrt(2 e V / m)). The deflection plates create a uniform vertical field E = V_plate / d across a small spacing d; the vertical acceleration is a = qE/m while inside the plates. After the plates, the electron drifts in a straight line with the velocity it acquired from the plate region.</p>
+      <p class="small">Constants used: electron charge e = 1.602e-19 C, mass m = 9.109e-31 kg. Scene is sized in meters and converted to pixels for display.</p>
+    </div>
+
+  </div>
+
+  <!-- three.js for 3D view -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
